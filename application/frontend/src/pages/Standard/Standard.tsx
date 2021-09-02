@@ -10,8 +10,7 @@ import { LoadingAndErrorIndicator } from '../../components/LoadingAndErrorIndica
 import { useEnvironment } from '../../hooks';
 import { Document } from '../../types';
 
-export const Standard = () => {
-  const { id } = useParams();
+export const ShowStandard = ({ id }) => {
   const { apiUrl } = useEnvironment();
   const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,4 +58,9 @@ export const Standard = () => {
       </div>
     </>
   );
+}
+
+export const Standard = () => {
+  const { id } = useParams();
+  return <ShowStandard id={id} />
 };

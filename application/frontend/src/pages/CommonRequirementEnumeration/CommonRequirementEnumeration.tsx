@@ -11,8 +11,7 @@ import { useEnvironment } from '../../hooks';
 import { Document } from '../../types';
 import { getLinksByType } from '../../utils';
 
-export const CommonRequirementEnumeration = () => {
-  const { id } = useParams();
+export const ShowCommonRequirementEnumeration = ({id}) => {
   const { apiUrl } = useEnvironment();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -46,8 +45,8 @@ export const CommonRequirementEnumeration = () => {
           <h5 className="cre-page__sub-heading">{cre.id}</h5>
           <div className="cre-page__description">{cre.description}</div>
           <div className="cre-page__links-container">
-            {Object.keys(linksByType).length > 0 &&
-              Object.entries(linksByType).map(([type, links]) => (
+            { Object.keys(linksByType).length > 0
+              && Object.entries(linksByType).map(([type, links]) => (
                 <div className="cre-page__links" key={type}>
                   <div className="cre-page__links-header">
                     {cre.name} is <b>{DOCUMENT_TYPE_NAMES[type]}</b>:
@@ -64,4 +63,9 @@ export const CommonRequirementEnumeration = () => {
       )}
     </div>
   );
+};
+
+export const CommonRequirementEnumeration = () => {
+  const { id } = useParams();
+  return <ShowCommonRequirementEnumeration id={id}/>
 };
