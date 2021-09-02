@@ -28,7 +28,6 @@ export const ShowStandard = ({ id }) => {
   );
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     setLoading(true);
     refetch();
   }, [page, id]);
