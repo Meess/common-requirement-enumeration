@@ -49,8 +49,6 @@ export const DocumentNode: FunctionComponent<DocumentNode> = ({ node }) => {
                   : <LinkContent/>
                 }
               </div>
-
-              // <Link to={`${route}/${id}`}>{linkContent}</Link>
           }
         </div>
         <div className="content"></div>
