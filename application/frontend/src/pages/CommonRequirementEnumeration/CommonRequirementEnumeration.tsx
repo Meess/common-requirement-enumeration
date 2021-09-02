@@ -1,8 +1,8 @@
 import './commonRequirementEnumeration.scss';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 import { DocumentNode } from '../../components/DocumentNode';
 import { LoadingAndErrorIndicator } from '../../components/LoadingAndErrorIndicator';
@@ -14,23 +14,23 @@ import { getLinksByType } from '../../utils';
 export const ShowCommonRequirementEnumeration = ({id}) => {
   const { apiUrl } = useEnvironment();
   const [loading, setLoading] = useState<boolean>(false);
-
-  const { error, data, refetch } = useQuery<{ data: Document;}, string>(
-    'cre',
-    () => fetch(`${apiUrl}/id/${id}`).then((res) => res.json()),
-    {
-      retry: false,
-      enabled: false,
-      onSettled: () => {
-        setLoading(false);
-      },
-    }
-  );
+  const [data, setData] = useState<{ data: Document;}>();
+  const [error, setError] = useState('');
 
   useEffect(() => {
     setLoading(true);
-    refetch();
-  }, [id]);
+    axios.get(`${apiUrl}/id/${id}`)
+    .then(function (response) {
+      setData(response.data);
+      setLoading(false);
+      setError('');
+    })
+    .catch(function (error) {
+      console.log(error);
+      setError(error);
+      setLoading(false);
+    });
+  }, []);
 
   const cre = data?.data;
   const linksByType = useMemo(() => (cre ? getLinksByType(cre) : {}), [cre]);
