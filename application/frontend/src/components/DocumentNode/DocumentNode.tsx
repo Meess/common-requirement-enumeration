@@ -7,6 +7,8 @@ import { DOCUMENT_TYPE_NAMES } from '../../const';
 import { CRE, STANDARD } from '../../routes';
 import { Document } from '../../types';
 import { getDocumentDisplayName, getLinksByType } from '../../utils';
+import { ShowStandard } from '../../pages/Standard/Standard';
+import { ShowCommonRequirementEnumeration } from '../../pages/CommonRequirementEnumeration/CommonRequirementEnumeration';
 
 interface DocumentNode {
   node: Document;
@@ -14,6 +16,7 @@ interface DocumentNode {
 
 export const DocumentNode: FunctionComponent<DocumentNode> = ({ node }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [nested, setNested] = useState<boolean>(false);
   const isStandard = node.doctype === 'Standard';
 
   if (!node.links || node.links.length === 0) {
@@ -21,25 +24,36 @@ export const DocumentNode: FunctionComponent<DocumentNode> = ({ node }) => {
     const id = isStandard ? node.name : node.id;
     const hasExternalLink = Boolean(node.hyperlink);
 
-    const linkContent = (
-      <>
-        <i aria-hidden="true" className="circle icon"></i>
+    const LinkContent = () => <>
+      <i aria-hidden="true" className="circle icon"></i>
         {getDocumentDisplayName(node)}
-        <i aria-hidden="true" className={`${hasExternalLink ? 'external' : 'external square'} icon`}></i>
-      </>
-    );
+      <i aria-hidden="true" className={`${hasExternalLink ? 'external' : 'external square'} icon`}></i>
+    </>;
+    
+    const NestContent = () => {
+      return isStandard
+        ? <ShowStandard id={id}/>
+        : <ShowCommonRequirementEnumeration id={id}/>
+    }
+
     return (
       <>
-        <div className={`title external-link document-node`}>
-          {hasExternalLink ? (
-            <a target="_blank" href={node.hyperlink}>
-              {linkContent}
-            </a>
-          ) : (
-            <Link to={`${route}/${id}`}>{linkContent}</Link>
-          )}
+        <div className="title external-link document-node">
+          { hasExternalLink 
+            ? <a target="_blank" href={node.hyperlink}>
+                <LinkContent/>
+              </a>
+            : <div onClick={() => setNested(true)}>
+                { nested
+                  ? <NestContent/>
+                  : <LinkContent/>
+                }
+              </div>
+
+              // <Link to={`${route}/${id}`}>{linkContent}</Link>
+          }
         </div>
-        <div className={`content`}></div>
+        <div className="content"></div>
       </>
     );
   }
